@@ -1,4 +1,4 @@
-package ru.gb.jtwo.alesson.online;
+package java;
 
 import java.awt.*;
 
