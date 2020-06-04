@@ -30,8 +30,8 @@ public class SocketThread extends Thread {
                 String msg = in.readUTF();
                 listener.onReceiveString(this, socket, msg);
             }
-        } catch (IOException e) {
-            System.out.println("Connection has been terminated!");
+        } catch (IOException exception) {
+            listener.onSocketException(this, exception);
         } finally {
             close();
         }
@@ -63,4 +63,5 @@ public class SocketThread extends Thread {
         }
         listener.onSocketStop(this);
     }
+
 }
