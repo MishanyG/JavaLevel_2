@@ -26,7 +26,8 @@ public class ClientThread extends SocketThread {
     void authAccept(String nickname) {
         isAuthorized = true;
         this.nickname = nickname;
-        sendMessage(Library.getAuthAccept(nickname));
+        String[] nick = Library.getAuthAccept(nickname).split(Library.DELIMITER);
+        sendMessage(String.format("Hello %s!", nick[1]));
     }
 
     void authFail() {

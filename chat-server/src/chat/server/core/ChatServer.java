@@ -54,7 +54,7 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
     public void onServerStart(ServerSocketThread thread) {
         putLog("Server started");
         SqlClient.connect();
-        putLog(SqlClient.getNickname("ivan", "1234"));
+        putLog(SqlClient.getNickname("ivan", "123"));
 
     }
 
@@ -120,8 +120,6 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
     private void handleNonAuthMessage(ClientThread client, String msg) {
         String[] arr = msg.split(Library.DELIMITER);
 
-        // [/auth_request, login, password]
-
         if (arr.length != 3 || !arr[0].equals(Library.AUTH_REQUEST)) {
             client.msgFormatError(msg);
             return;
@@ -134,7 +132,8 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
             return;
         }
         client.authAccept(nickname);
-        sendToAllAuthorizedClients(Library.getTypeBroadcast("Server", nickname + " connected"));
+        arr = Library.getTypeBroadcast("Server", nickname).split(Library.DELIMITER);
+        sendToAllAuthorizedClients(String.format("%s %s: %s - connected!", DATE_FORMAT.format(System.currentTimeMillis()), arr[2], arr[3]));
     }
 
     private void handleAuthMessage(ClientThread client, String msg) {
