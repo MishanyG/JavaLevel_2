@@ -10,9 +10,14 @@ public class ClientThread extends SocketThread {
 
     private String nickname;
     private boolean isAuthorized;
+    private boolean isReconnecting;
 
     public ClientThread(String name, SocketThreadListener listener, Socket socket) {
         super(name, listener, socket);
+    }
+
+    public boolean isReconnecting() {
+        return isReconnecting;
     }
 
     public String getNickname() {
@@ -23,11 +28,15 @@ public class ClientThread extends SocketThread {
         return isAuthorized;
     }
 
+    void reconnect() {
+        isReconnecting = true;
+        close();
+    }
+
     void authAccept(String nickname) {
         isAuthorized = true;
         this.nickname = nickname;
-        String[] nick = Library.getAuthAccept(nickname).split(Library.DELIMITER);
-        sendMessage(String.format("Hello %s!", nick[1]));
+        sendMessage(Library.getAuthAccept(nickname));
     }
 
     void authFail() {
