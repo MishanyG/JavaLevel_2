@@ -224,7 +224,6 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
 
     @Override
     public void onSocketException(SocketThread thread, Throwable throwable) {
-        //showException(thread, throwable);
         thread.close();
     }
 }
