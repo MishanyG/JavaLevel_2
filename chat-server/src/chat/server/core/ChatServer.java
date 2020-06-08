@@ -107,6 +107,7 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
             sendToAllAuthorizedClients(Library.getTypeBroadcast("Server",
                     client.getNickname() + " disconnected"));
         }
+        sendToAllAuthorizedClients(Library.getUserList(getUsers()));
     }
 
     @Override

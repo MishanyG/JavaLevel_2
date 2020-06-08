@@ -12,7 +12,6 @@ public class SocketThread extends Thread {
     private final Socket socket;
     private DataOutputStream out;
     private DataInputStream in;
-    private boolean aut = false;
 
     public SocketThread(String name, SocketThreadListener listener, Socket socket) {
         super(name);
