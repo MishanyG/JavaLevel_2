@@ -4,6 +4,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 
 public class SocketThread extends Thread {
 
@@ -11,6 +12,7 @@ public class SocketThread extends Thread {
     private final Socket socket;
     private DataOutputStream out;
     private DataInputStream in;
+    private boolean aut = false;
 
     public SocketThread(String name, SocketThreadListener listener, Socket socket) {
         super(name);
@@ -30,6 +32,8 @@ public class SocketThread extends Thread {
                 String msg = in.readUTF();
                 listener.onReceiveString(this, socket, msg);
             }
+        } catch (SocketTimeoutException s) {
+            close();
         } catch (IOException exception) {
             listener.onSocketException(this, exception);
         } finally {
