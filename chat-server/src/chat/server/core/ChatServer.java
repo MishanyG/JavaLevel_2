@@ -8,6 +8,7 @@ import chat.network.SocketThreadListener;
 
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Vector;
@@ -74,7 +75,6 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
 
     @Override
     public void onServerTimeout(ServerSocketThread thread, ServerSocket server) {
-//        putLog("PING? PONG!");
     }
 
     @Override
@@ -117,19 +117,19 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
     }
 
     @Override
-    public synchronized void onReceiveString(SocketThread thread, Socket socket, String msg) {
+    public synchronized void onReceiveString(SocketThread thread, Socket socket, String msg) throws SocketException {
         ClientThread client = (ClientThread) thread;
         if (client.isAuthorized()) {
             handleAuthMessage(client, msg);
-        } else
+        } else {
+            socket.setSoTimeout(120000);
             handleNonAuthMessage(client, msg);
+        }
+        if (client.isAuthorized()) socket.setSoTimeout(0);
     }
 
     private void handleNonAuthMessage(ClientThread newClient, String msg) {
         String[] arr = msg.split(Library.DELIMITER);
-
-        // [/auth_request, login, password]
-
         if (arr.length != 3 || !arr[0].equals(Library.AUTH_REQUEST)) {
             newClient.msgFormatError(msg);
             return;
@@ -138,7 +138,6 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
         String password = arr[2];
         String nickname = SqlClient.getNickname(login, password);
         if (nickname == null) {
-            newClient.authFail();
             return;
         } else {
             ClientThread oldClient = findClientByNickname(nickname);
@@ -149,7 +148,6 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
                 oldClient.reconnect();
                 clients.remove(oldClient);
             }
-
         }
         sendToAllAuthorizedClients(Library.getUserList(getUsers()));
     }
