@@ -59,7 +59,6 @@ public class ServerGUI extends JFrame implements ActionListener, Thread.Uncaught
             chatServer.stop();
         } else if (src == btnStart) {
             chatServer.start(8189);
-//            throw new RuntimeException("Hello from EDT");
         } else {
             throw new RuntimeException("Unknown source: " + src);
         }

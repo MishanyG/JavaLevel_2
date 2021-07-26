@@ -28,7 +28,7 @@ public class SqlClient {
     synchronized static String getNickname(String login, String password) {
         try {
             ResultSet rs = statement.executeQuery(
-                    String.format("select nickname from Users_bd where login = '%s' and password = '%s'",
+                    String.format("select nickname from users_bd where login = '%s' and password = '%s'",
                             login, password));
             if (rs.next()) {
                 return rs.getString("nickname");
